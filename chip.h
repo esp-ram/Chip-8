@@ -1,0 +1,76 @@
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <SDL2/SDL.h>
+
+
+enum {
+  SCREEN_WIDTH = 64,
+  SCREEN_HEIGHT = 32,
+  ON_COLOR = 0xFFFFFFFF,
+  OFF_COLOR = 0xFF000000,
+  FRAMES_PER_SECOND = 60,
+  MILLISECONDS_PER_CYCLE = 1000 / FRAMES_PER_SECOND,
+  PIXEL_SIZE = 5,
+};
+
+
+typedef struct chip8{
+    uint8_t v[16];
+    uint16_t opcode;
+    uint16_t i;
+    uint16_t pc;
+    uint16_t stack[16];
+    uint16_t sp;
+    bool drawFlag;
+    uint8_t keys[16];
+    uint8_t memory[4096];
+    uint32_t video[64 * 32];
+    uint8_t soundTimer;
+    uint8_t delayTimer;
+}chip8;
+
+
+static const uint8_t font[80] = {
+  0xF0, 0x90, 0x90, 0x90, 0xF0,
+  0x20, 0x60, 0x20, 0x20, 0x70,
+  0xF0, 0x10, 0xF0, 0x80, 0xF0,
+  0xF0, 0x10, 0xF0, 0x10, 0xF0,
+  0x90, 0x90, 0xF0, 0x10, 0x10,
+  0xF0, 0x80, 0xF0, 0x10, 0xF0,
+  0xF0, 0x80, 0xF0, 0x90, 0xF0,
+  0xF0, 0x10, 0x20, 0x40, 0x40,
+  0xF0, 0x90, 0xF0, 0x90, 0xF0,
+  0xF0, 0x90, 0xF0, 0x10, 0xF0,
+  0xF0, 0x90, 0xF0, 0x90, 0x90,
+  0xE0, 0x90, 0xE0, 0x90, 0xE0,
+  0xF0, 0x80, 0x80, 0x80, 0xF0,
+  0xE0, 0x90, 0x90, 0x90, 0xE0,
+  0xF0, 0x80, 0xF0, 0x80, 0xF0,
+  0xF0, 0x80, 0xF0, 0x80, 0x80
+};
+
+
+static const SDL_Scancode key_map[16] = {
+    SDL_SCANCODE_1,
+    SDL_SCANCODE_2,
+    SDL_SCANCODE_3,
+    SDL_SCANCODE_4,
+    SDL_SCANCODE_Q,
+    SDL_SCANCODE_W,
+    SDL_SCANCODE_E,
+    SDL_SCANCODE_R,
+    SDL_SCANCODE_A,
+    SDL_SCANCODE_S,
+    SDL_SCANCODE_D,
+    SDL_SCANCODE_F,
+    SDL_SCANCODE_Z,
+    SDL_SCANCODE_X,
+    SDL_SCANCODE_C,
+    SDL_SCANCODE_V
+};
+
+
+int chip_init(chip8* chip, const char* filename);
+void emulateCycle (chip8* chip);
+void chip_update_timers(chip8* chip);
